@@ -3,12 +3,12 @@ import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
+  apiKey: "AIzaSyAU-nnanHH5gDbkUZjLsPICInqKeW4BReI",
+  authDomain: "jawado-f3c44.firebaseapp.com",
+  projectId: "jawado-f3c44",
   storageBucket: "jawado-f3c44.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  messagingSenderId: "696205066613",
+  appId: "1:696205066613:web:6de6c0c7b49bdca5e3933c"
 };
 
 const app = initializeApp(firebaseConfig);
