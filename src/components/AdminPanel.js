@@ -5,6 +5,8 @@ import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material
 
 import HomeIcon from '@mui/icons-material/Home';
 import SecuritySection from './SecuritySection';
+import { storage } from '../firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 function AdminPanel({ onAddProduct, products, onUpdateProduct, onDeleteProduct, orders, onReplyOrder, onChangeOrderStatus, onGoHome, onLogout }) {
   const [form, setForm] = React.useState({ name: '', price: '', image: '', available: true });
@@ -31,21 +33,34 @@ function AdminPanel({ onAddProduct, products, onUpdateProduct, onDeleteProduct, 
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.name || !form.price || !form.image) {
       setError('يرجى تعبئة جميع الحقول');
       return;
     }
     setError('');
+    let imageUrl = form.image;
+    // إذا كانت الصورة base64 (ليست رابط فعلي)، ارفعها إلى التخزين
+    if (form.image && form.image.startsWith('data:')) {
+      try {
+        const imageRef = ref(storage, `products/${Date.now()}_${Math.random().toString(36).substr(2, 8)}.jpg`);
+        const response = await fetch(form.image);
+        const blob = await response.blob();
+        await uploadBytes(imageRef, blob);
+        imageUrl = await getDownloadURL(imageRef);
+      } catch (err) {
+        setError('حدث خطأ أثناء رفع الصورة');
+        return;
+      }
+    }
     onAddProduct({
-      id: Date.now(),
       name: form.name,
-      price: Number(form.price.replace(/,/g, '.')), // تحويل الفواصل إلى نقطة ثم رقم
-      image: form.image,
+      price: Number(form.price.replace(/,/g, '.')),
+      image: imageUrl,
       available: form.available,
     });
-    setForm({ name: '', price: '', image: '' });
+    setForm({ name: '', price: '', image: '', available: true });
     setPreview('');
   };
 
