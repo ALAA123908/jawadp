@@ -9,7 +9,7 @@ import { storage } from '../firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 function AdminPanel({ onAddProduct, products, onUpdateProduct, onDeleteProduct, orders, onReplyOrder, onChangeOrderStatus, onGoHome, onLogout }) {
-  const [form, setForm] = React.useState({ name: '', price: '', image: '', available: true });
+  const [form, setForm] = React.useState({ name: '', price: '', image: '', available: true, description: '', category: '', unit: '' });
   const [error, setError] = React.useState('');
   const [preview, setPreview] = React.useState('');
   const [editOpen, setEditOpen] = React.useState(false);
@@ -35,7 +35,7 @@ function AdminPanel({ onAddProduct, products, onUpdateProduct, onDeleteProduct, 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.name || !form.price || !form.image) {
+    if (!form.name || !form.price || !form.image || !form.description || !form.category || !form.unit) {
       setError('يرجى تعبئة جميع الحقول');
       return;
     }
@@ -59,8 +59,11 @@ function AdminPanel({ onAddProduct, products, onUpdateProduct, onDeleteProduct, 
       price: Number(form.price.replace(/,/g, '.')),
       image: imageUrl,
       available: form.available,
+      description: form.description,
+      category: form.category,
+      unit: form.unit
     });
-    setForm({ name: '', price: '', image: '', available: true });
+    setForm({ name: '', price: '', image: '', available: true, description: '', category: '', unit: '' });
     setPreview('');
   };
 
@@ -118,6 +121,29 @@ function AdminPanel({ onAddProduct, products, onUpdateProduct, onDeleteProduct, 
               {preview && (
                 <Avatar src={preview} alt="صورة المنتج" variant="rounded" sx={{ width: 80, height: 80, mx: 'auto' }} />
               )}
+              <TextField
+                label="الوصف"
+                name="description"
+                value={form.description}
+                onChange={handleChange}
+                required
+                multiline
+                minRows={2}
+              />
+              <TextField
+                label="التصنيف"
+                name="category"
+                value={form.category}
+                onChange={handleChange}
+                required
+              />
+              <TextField
+                label="وحدة القياس (مثال: كجم، عبوة، قطعة)"
+                name="unit"
+                value={form.unit}
+                onChange={handleChange}
+                required
+              />
               {/* متوفر أو غير متوفر */}
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                 <Typography>متوفر؟</Typography>
